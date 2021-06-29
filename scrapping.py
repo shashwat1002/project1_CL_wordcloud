@@ -20,8 +20,12 @@ def scrap_english_page(url, corpus_file, url_file):
             is_reference = False
             if content.name == "sup":
                 # references in wikipedia are sup
-                classes = content['class']
-                is_reference = "reference" in classes
+                try:
+                    classes = content['class']
+                    is_reference = "reference" in classes
+                except KeyError:
+                    # in case sup doesn't have a class, we don't care
+                    pass
             string = content.string
             if string is not None and not is_reference:
                 # if it's a reference then we don't want to write the text
@@ -30,7 +34,12 @@ def scrap_english_page(url, corpus_file, url_file):
             if content.name == 'a':
                 # has a url
                 # note that this includes the references urls
-                url_string = content['href']
+                try:
+                    url_string = content['href']
+                except KeyError:
+                    # BECAUSE FOR SOME FUCKED UP REASON THERE IS AN A TAG WITHOUT URL
+                    continue
+
                 current_url_parsed = urllib.parse.urlparse(url_string)
                 if current_url_parsed.netloc == '':
                     # if netloc is empty then that means the url is relative
