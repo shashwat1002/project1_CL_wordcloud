@@ -9,6 +9,7 @@ def scrap_english_page(url, corpus_file, url_file):
     soup_for_land_page = BeautifulSoup(response.content, 'html.parser')
     all_paragraphs = soup_for_land_page.find_all('p')
     parsed_url = urllib.parse.urlparse(url)
+    output_text = ""
     for para in all_paragraphs:
         for content in para.contents:
             # each content has a string object
@@ -23,6 +24,7 @@ def scrap_english_page(url, corpus_file, url_file):
             string = content.string
             if string is not None and not is_reference:
                 # if it's a reference then we don't want to write the text
+                output_text += string
                 corpus_file.write(string)
             if content.name == 'a':
                 # has a url
@@ -36,4 +38,4 @@ def scrap_english_page(url, corpus_file, url_file):
                     # basically we're adding the relative part after the base domain
                 url_file.write(url_string)
                 url_file.write("\n")
-
+    return output_text
