@@ -15,11 +15,18 @@ def scrap_english_page(url, corpus_file, url_file):
             # check for type
             # if url type, append url to appropriate file
             # take text and append appropriately
+            is_reference = False
+            if content.name == "sup":
+                # references in wikipedia are sup
+                classes = content['class']
+                is_reference = "reference" in classes
             string = content.string
-            if string is not None:
+            if string is not None and not is_reference:
+                # if it's a reference then we don't want to write the text
                 corpus_file.write(string)
             if content.name == 'a':
-                # is a url
+                # has a url
+                # note that this includes the references urls
                 url_string = content['href']
                 current_url_parsed = urllib.parse.urlparse(url_string)
                 if current_url_parsed.netloc == '':
