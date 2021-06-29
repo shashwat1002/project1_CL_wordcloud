@@ -73,4 +73,31 @@ counts_of_words = Counter(word_list_without_stopwords_english)
 # the list has all words in their lowercase form
 
 # print(counts_of_words)
+unique_words = []
+
+for word in counts_of_words:
+    unique_words.append(word)
+
+#print(unique_words)
+
+stemmer = nltk.stem.SnowballStemmer('english')
+stemmed_words = []
+
+for word in unique_words:
+    stemmed_words.append(stemmer.stem(word))
+
+# print(stemmed_words)
+counts_of_stemmed_words = Counter(stemmed_words)
+nltk.download('wordnet')
+lemmatizer = nltk.stem.WordNetLemmatizer()
+
+lemmatized_words = []
+
+for word in unique_words:
+    lemmatized_words.append(lemmatizer.lemmatize(word))
+
+# print(lemmatized_words)
+
+counts_of_lemmatized_words = Counter(lemmatized_words)
+
 
