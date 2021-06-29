@@ -10,6 +10,7 @@ def scrap_english_page(url, corpus_file, url_file):
     all_paragraphs = soup_for_land_page.find_all('p')
     parsed_url = urllib.parse.urlparse(url)
     output_text = ""
+    url_list = [] # to store the list of urls discovered on this page
     for para in all_paragraphs:
         for content in para.contents:
             # each content has a string object
@@ -36,6 +37,7 @@ def scrap_english_page(url, corpus_file, url_file):
                     # thus we need to make it an absolute url
                     url_string = "{}://{}/{}".format(parsed_url.scheme, parsed_url.netloc, url_string)
                     # basically we're adding the relative part after the base domain
+                url_list.append(url_string)
                 url_file.write(url_string)
                 url_file.write("\n")
-    return output_text
+    return output_text, url_list
