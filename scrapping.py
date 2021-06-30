@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 import urllib.parse
 import nltk.tokenize
 import os
+import indicnlp.tokenize.indic_tokenize
+import indicnlp.tokenize.sentence_tokenize
 
 
 def scrap_english_page(url, corpus_file, url_file):
@@ -78,7 +80,9 @@ def tokenize_sentence_and_words(text, language):
     if language == "English":
         word_tokens = nltk.tokenize.word_tokenize(text)
         sentence_tokens = nltk.tokenize.sent_tokenize(text)
-
+    elif language == "Hindi":
+        sentence_tokens = indicnlp.tokenize.sentence_tokenize.sentence_split(text, "hi")
+        word_tokens = indicnlp.tokenize.indic_tokenize.trivial_tokenize_indic(text)
     return word_tokens, sentence_tokens
 
 def read_urls_files_to_memory(url_file_path, visited_url_file_path):
@@ -162,6 +166,10 @@ def generate_data(seed_url, language, data_dir):
         visited_url_file_index = 3
         corpus_path_index = 0
         url_file_index = 2
+    else:
+        visited_url_file_index = 5
+        corpus_path_index = 4
+        url_file_index = 6
 
     corpus_path = os.path.join(data_dir, DATA_FILE_NAMES[corpus_path_index])
 

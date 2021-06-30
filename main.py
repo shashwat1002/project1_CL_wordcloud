@@ -100,4 +100,38 @@ for word in unique_words:
 
 counts_of_lemmatized_words = Counter(lemmatized_words)
 
+# HINDI PART BEGINS HERE
+
+print("Will you send corpus input for Hindi? Y/n")
+custom_input = input()
+corpus_given = False
+
+if custom_input == "Y":
+    corpus_given = True
+
+if corpus_given:
+    print("Please enter filename to Hindi corpus")
+    file_name = input()
+    corpus_hindi_path = os.path.join(current_directory, file_name)
+else:
+    #scrape data
+    try:
+        os.mkdir("data")
+    except FileExistsError:
+        # do nothing
+        pass
+
+
+    # get the current working directory
+    data_dir = os.path.join(current_directory, "data")
+    # data directory
+
+    scrapping.create_relevant_data_files(data_dir)
+    scrapping.generate_data(HINDI_URL_SEED, "Hindi", data_dir)
+    corpus_hindi_path = os.path.join(data_dir, DATA_FILE_NAMES[4])
+
+corpus_hindi = open(corpus_hindi_path, "r")
+
+corpus_text_hindi = corpus_hindi.read()
+
 
