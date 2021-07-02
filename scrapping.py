@@ -95,7 +95,7 @@ def read_urls_files_to_memory(url_file_path, visited_url_file_path):
 
     url_file.close()
 
-    visited_url_file = open(visited_url_file_path, "rb")
+    visited_url_file = open(visited_url_file_path, "r")
     for url in visited_url_file:
 
         visited_urls.append(url.rstrip("\n"))
@@ -122,8 +122,13 @@ def crawl_begin(sentence_limit, corpus_file_path, url_file_path, visited_urls_fi
     visited_urls = set()
     visited_urls.update(visited_urls_list)
     total_sentences = 0
-    all_sentence_list = nltk.tokenize.sent_tokenize(grand_corpus_text)
-    all_words_list = nltk.tokenize.word_tokenize(grand_corpus_text)
+    all_words_list, all_sentence_list = tokenize_sentence_and_words(grand_corpus_text, language)
+    # tokenization of sentence and words happen
+    # hindi or english
+    if total_sentences >= sentence_limit:
+        return grand_corpus_text, all_sentence_list, all_words_list
+
+    total_sentences += len(all_sentence_list)
     for url in grand_url_list:
         if url in visited_urls:
             continue
