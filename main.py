@@ -168,40 +168,6 @@ corpus_text_hindi = corpus_hindi.read()
 # re cleaning of corpus
 corpus_text_hindi = re.sub("[A-Z]|[a-z]", "", corpus_text_hindi)
 
-# # inltk setup
-# inltk.setup("hi")
-#
-# hindi_words_list = []
-#
-# # removing foreign words
-# hindi_words_list = inltk.remove_foreign_languages(corpus_text_hindi, "hi")
-# # retain all hindi words
-# #print(hindi_words_list)
-#
-# counter_hindi_words = Counter(hindi_words_list)
-# plotting.plotter_of_counter("Hindi words", counter_hindi_words, 10)
-#
-# new_list_hindi_words = []
-# # since since the removed words have become <unk>
-# # we want to be rid of all <unk>s
-#
-# for word in hindi_words_list:
-#     if word != "<unk>":
-#         new_list_hindi_words.append(word)
-#
-# hindi_words_list = new_list_hindi_words
-#
-# hindi_words_without_stopwords = []
-#
-# for word in hindi_words_list:
-#     if word.lstrip("▁") not in HINDI_STOP_WORDS and len(word) > 1:
-#         hindi_words_without_stopwords.append(word.lstrip("▁"))
-#
-# # print(hindi_words_without_stopwords)
-#
-# count_hindi_words_without_stopwords = Counter(hindi_words_without_stopwords)
-# plotting.plotter_of_counter("Hindi words without stopwords", count_hindi_words_without_stopwords, 10)
-
 stanza.download('hi')
 stanza.download('en')
 nlp = stanza.Pipeline(processors = "tokenize,mwt,pos,lemma")
