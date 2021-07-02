@@ -1,0 +1,144 @@
+# The Data Collected
+
+At different stages, the data is used to make a frequency bar-chart of tokens v/s frequency.
+
+
+
+## The English Corpus
+
+The English corpus is first tokenized using the `nltk.tokenize.word_tokenize()` function. 
+
+
+
+### The frequency chart of just english tokens in the corpus:
+
+
+
+Only the top 15 (as per frequency) tokens have been plotted into the bar chart
+
+We notice that there're mostly stopwords and punctuation
+
+![english_tokens_all](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/plots/english_tokens_all.png)
+
+
+
+### The frequency chart of english tokens after the removal of stopwords
+
+![english_minus_stopwords](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/plots/english_minus_stopwords.png)
+
+
+
+We see the corpus is heavily dominated by references to film and the  Godfather franchise. The reason for that is because the data was collected by doing a breadth first search of all urls linked from the page starting at "The Godfather" on wikipedia. 
+
+
+
+We also note that "film" and "films" are two different entries.
+
+
+
+### Pos tagging
+
+![english_pos](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/plots/english_pos.png)
+
+
+
+The pos tagger was called on the corpus and then the software made a frequency plot of all POS tags assigned. 
+
+We see that NNP is the most frequent tag as the corpus consists heavily of names of actors and directors.
+
+
+
+### Stemmer and Lemmatizer
+
+![english_stemmed](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/plots/english_stemmed.png)
+
+![english_lemmatized](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/plots/english_lemmatized.png)
+
+
+
+As expected, the stemming is lackluster. A lot of the words post stemming are wrong. 
+
+Lemmatizing is a lot better, and we see that the frequencies of "film" and "films" have been summed.
+
+
+
+### The wordcloud
+
+![english_wordcloud](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/english_wordcloud.png)
+
+
+
+
+
+## The Hindi Corpus
+
+
+
+## Frequency chart of just the Hindi Tokens:
+
+![hindi_tokens_all](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/plots/hindi_tokens_all.png)
+
+We see that it mostly consists of stopwords and puncuation again.
+
+
+
+### After removal of stopwords
+
+![hindi_tokens_minus_stopwords](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/plots/hindi_tokens_minus_stopwords.png)
+
+
+
+
+
+We see that theme of this is mostly around forms of literature
+
+Something that needs to be noted here is that ""जाता" is among the top in the list. The reason for that is that it's a light verb in most cases and therefore show up in a more general sense. 
+The reason I didn't put "जाता" in the list of stopwords is because in certain cases it is a proper verb and it's rather hard to distinguish these cases. So I left it in.
+
+### POS tagging
+
+![hindi__pos](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/plots/hindi__pos.png)
+
+
+
+We see that VERBS lead the list and are followed by nouns. 
+
+### Lemmatizer
+
+![lemma_hindi](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/lemma_hindi.png)
+
+Lemmatization in hindi is rather lackluster
+
+The reason "be" is so high is that a lot of words have been changed to their english counterparts. Words like "था" and "है" have been changed into their English counterparts and that is "be"
+
+
+
+So I decided to plot the output of the stanford lemmatizer after removing all the lemmas corresponding to hindi stopwords, hoping for a better outcome 
+
+![lemmatizer_no_stopwords](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/lemmatizer_no_stopwords.png)
+
+It doesn't work very well, still a lot of words are lemmatized to "mamcm", "mage", "wam", "mamcomm".
+
+Although we notice that the more frequent hindi words here were also there in the tokenization graph (after removal of stopwords)
+
+
+
+### The wordcloud
+
+![hindi_wordcloud](/home/mrcreator/course_stuff/UG1/T3/CL/project/project1/project1_CL_wordcloud/hindi_wordcloud.png)
+
+
+
+
+
+# The basic algorith for wordcloud generation
+
+- The corpus is tokenized as a python list
+- All stopwords are removed from the said list.
+- The new list without stopwords is turned into a python `Counter` object. Which basically consists of a mapping of words to their frequencies in the list. A hashmap is used internally to accomplish this.
+- This Counter object is passed into the `wordcloud` function `fit_words` with a `max_words` limit of 15.
+
+
+
+
+
