@@ -1,10 +1,12 @@
 import matplotlib.pyplot as plt
 import matplotlib as mp1
+import config
 
 mp1.rcParams['font.sans-serif'] = [
     'sans-serif',
-    'Lohit Devanagari'
+    config.HINDI_FONT_FAMILY
 ]
+mp1.rcParams['figure.figsize'] = [9.0, 6.0]
 
 def plotter_of_counter(title, counter_obj, number):
     # takes a counter object and plots appropriately
