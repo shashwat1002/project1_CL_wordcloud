@@ -11,12 +11,17 @@ from wordcloud import WordCloud
 current_directory = os.getcwd()
 corpus_english_path = ""
 
-print("Will you send corpus input for English or should I scrape data? Y/n")
+print("Will you send corpus input for English. (no will generate corpus) Y/n")
 custom_input = input()
 corpus_given = False
 
-if custom_input == "Y":
+if custom_input == "Y" or custom_input == "y":
     corpus_given = True
+elif custom_input == "N" or custom_input == "n":
+    corpus_given = False
+else:
+    raise IOError("Invalid Input")
+
 
 if corpus_given:
     print("Please enter filename to English corpus")
@@ -124,12 +129,16 @@ counts_of_lemmatized_words = Counter(lemmatized_words)
 plotting.plotter_of_counter("Lemmatized words", counts_of_lemmatized_words, 10)
 # HINDI PART BEGINS HERE
 
-print("Will you send corpus input for Hindi? Y/n")
+print("Will you send corpus input for Hindi? (no will generate corpus)  Y/n")
 custom_input = input()
 corpus_given = False
 
-if custom_input == "Y":
+if custom_input == "Y" or custom_input == "y":
     corpus_given = True
+elif custom_input == "N" or custom_input == "n":
+    corpus_given = False
+else:
+    raise  IOError("Invalid input")
 
 if corpus_given:
     print("Please enter filename to Hindi corpus")
