@@ -3,9 +3,10 @@ import os
 import scrapping
 import nltk
 from collections import Counter
-from inltk import inltk
-import stanfordnlp
+import stanza
 import plotting
+import re
+from wordcloud import WordCloud
 
 current_directory = os.getcwd()
 corpus_english_path = ""
@@ -87,6 +88,10 @@ counts_of_words = Counter(word_list_without_stopwords_english)
 # the list has all words in their lowercase form
 plotting.plotter_of_counter("After Removal of stopwords", counts_of_words, 10)
 # print(counts_of_words)
+cloud_english = WordCloud(max_words=15)
+cloud_english.fit_words(counts_of_words)
+cloud_english.to_file("english_wordcloud.png")
+
 unique_words = []
 
 for word in counts_of_words:
@@ -151,30 +156,71 @@ corpus_hindi = open(corpus_hindi_path, "r")
 
 corpus_text_hindi = corpus_hindi.read()
 
-# inltk setup
-inltk.setup("hi")
+# re cleaning of corpus
+corpus_text_hindi = re.sub("[A-Z]|[a-z]", "", corpus_text_hindi)
 
-hindi_words_list = []
+# # inltk setup
+# inltk.setup("hi")
+#
+# hindi_words_list = []
+#
+# # removing foreign words
+# hindi_words_list = inltk.remove_foreign_languages(corpus_text_hindi, "hi")
+# # retain all hindi words
+# #print(hindi_words_list)
+#
+# counter_hindi_words = Counter(hindi_words_list)
+# plotting.plotter_of_counter("Hindi words", counter_hindi_words, 10)
+#
+# new_list_hindi_words = []
+# # since since the removed words have become <unk>
+# # we want to be rid of all <unk>s
+#
+# for word in hindi_words_list:
+#     if word != "<unk>":
+#         new_list_hindi_words.append(word)
+#
+# hindi_words_list = new_list_hindi_words
+#
+# hindi_words_without_stopwords = []
+#
+# for word in hindi_words_list:
+#     if word.lstrip("▁") not in HINDI_STOP_WORDS and len(word) > 1:
+#         hindi_words_without_stopwords.append(word.lstrip("▁"))
+#
+# # print(hindi_words_without_stopwords)
+#
+# count_hindi_words_without_stopwords = Counter(hindi_words_without_stopwords)
+# plotting.plotter_of_counter("Hindi words without stopwords", count_hindi_words_without_stopwords, 10)
 
-# removing foreign words
-hindi_words_list = inltk.remove_foreign_languages(corpus_text_hindi, "hi")
-# retain all hindi words
-#print(hindi_words_list)
-
-new_list_hindi_words = []
-# since since the removed words have become <unk>
-# we want to be rid of all <unk>s
-
-for word in hindi_words_list:
-    if word != "<unk>":
-        new_list_hindi_words.append(word)
-
-hindi_words_list = new_list_hindi_words
-
-stanfordnlp.download('hi')
-stanfordnlp.download('en')
-nlp = stanfordnlp.Pipeline(processors = "tokenize,pos")
+stanza.download('hi')
+stanza.download('en')
+nlp = stanza.Pipeline(processors = "tokenize,mwt,pos,lemma")
 hindi_doc = nlp(corpus_text_hindi)
+
+def get_tokens(doc):
+    tokens = []
+    for sentence in doc.sentences:
+        for word in sentence.words:
+            tokens.append(word.text)
+    return tokens
+
+list_tokens_hindi = get_tokens(hindi_doc)
+token_counter_hindi = Counter(list_tokens_hindi)
+
+plotting.plotter_of_counter("Hindi Tokens", token_counter_hindi, 10)
+
+# gotta clean off stopwords
+hindi_tokens_without_stopwords = []
+
+for word in list_tokens_hindi:
+    if word.rstrip("।") not in HINDI_STOP_WORDS and len(word) > 2:
+        hindi_tokens_without_stopwords.append(word.rstrip("।"))
+
+token_counter_hindi_without_stopwords = Counter(hindi_tokens_without_stopwords)
+print(token_counter_hindi_without_stopwords)
+plotting.plotter_of_counter("Hindi tokens without stopwords", token_counter_hindi_without_stopwords, 10)
+
 
 def extract_pos_stanford_model(doc):
     parsed_text = {'token': [], 'pos_tag': []}
@@ -182,18 +228,39 @@ def extract_pos_stanford_model(doc):
         for word in sentence.words:
 
             parsed_text['token'].append(word.text)
-            parsed_text['pos_tag'].append(word.pos)
+            parsed_text['pos_tag'].append(word.upos)
     return parsed_text
 
 pos_tags_hindi_doc = extract_pos_stanford_model(hindi_doc)
-print(pos_tags_hindi_doc)
-# def extract_lemmatized_hindi_words(doc):
-#     lemmatized_list = []
-#     for sentence in doc.sentences:
-#         for word in sentence.words:
-#             lemmatized_list.append(word.lemma)
-#
-#     return lemmatized_list
-# lemmatized_hindi_words = extract_lemmatized_hindi_words(hindi_doc)
-# print(lemmatized_hindi_words)
+# returns a dictionary
+# one attribute has a list of all words
+# the other attribute has a list of all corresponding tags
+# print(pos_tags_hindi_doc['token'])
+counter_pos_hindi = Counter(pos_tags_hindi_doc['pos_tag'])
+plotting.plotter_of_counter("POS tags in hindi cor", counter_pos_hindi, 10)
 
+# print(pos_tags_hindi_doc)
+def extract_lemmatized_hindi_words(doc):
+    lemmatized_list = []
+    for sentence in doc.sentences:
+        for word in sentence.words:
+            lemmatized_list.append(word.lemma)
+
+    return lemmatized_list
+lemmatized_hindi_words = extract_lemmatized_hindi_words(hindi_doc)
+
+# print(lemmatized_hindi_words)
+lemmatized_hindi_words_count = Counter(lemmatized_hindi_words)
+plotting.plotter_of_counter("Lemmatized hindi words", lemmatized_hindi_words_count, 10)
+
+def extract_lemma_ignoring_stopwords(doc):
+    return_list = []
+    for sentence in doc.sentences:
+        for word in sentence.words:
+            if word.text.rstrip("।") not in HINDI_STOP_WORDS and len(word.text.rstrip("।")) > 2:
+                return_list.append(word.lemma)
+    return return_list
+
+
+lemma_minus_stop_counter = Counter(extract_lemma_ignoring_stopwords(hindi_doc))
+plotting.plotter_of_counter("Lemmatization minus stopwords", lemma_minus_stop_counter, 10)
