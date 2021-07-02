@@ -218,9 +218,11 @@ for word in list_tokens_hindi:
         hindi_tokens_without_stopwords.append(word.rstrip("।"))
 
 token_counter_hindi_without_stopwords = Counter(hindi_tokens_without_stopwords)
-print(token_counter_hindi_without_stopwords)
+# print(token_counter_hindi_without_stopwords)
 plotting.plotter_of_counter("Hindi tokens without stopwords", token_counter_hindi_without_stopwords, 10)
-
+cloud_hindi = WordCloud(max_words=15, font_path=HINDI_FONT_PATH)
+cloud_hindi.fit_words(token_counter_hindi_without_stopwords)
+cloud_hindi.to_file("hindi_wordcloud.png")
 
 def extract_pos_stanford_model(doc):
     parsed_text = {'token': [], 'pos_tag': []}
